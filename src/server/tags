@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+DataInfo	main.go	/^type DataInfo struct {$/;"	t
+FollowData	main.go	/^type FollowData struct {$/;"	t
+GetFollows	twitch/api.go	/^func GetFollows(id string, target interface{}) error {$/;"	f
+GetUser	twitch/api.go	/^func GetUser(login string, target interface{}) error {$/;"	f
+UserData	main.go	/^type UserData struct {$/;"	t
+client_id	twitch/api.go	/^var client_id string = "8seombbxiqt9h8bcee78xdyhdi83zp"$/;"	v
+handler	main.go	/^func handler(w http.ResponseWriter, r *http.Request) {$/;"	f
+init	twitch/api.go	/^func init() {$/;"	f
+main	main.go	/^func main() {$/;"	f
+main	main.go	/^package main$/;"	p
+twitch	twitch/api.go	/^package twitch$/;"	p
+twitch_API	twitch/api.go	/^var twitch_API string = "https:\/\/api.twitch.tv\/helix\/"$/;"	v
