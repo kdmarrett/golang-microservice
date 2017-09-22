@@ -15,17 +15,28 @@ func init() {
 	fmt.Println("Initializing Twitch API...")
 }
 
-func GetFollows(Id string, target interface{}) error {
+func GetStreamStatus(login string, target interface{}) error {
 	client := &http.Client{}
-	//req, err := http.NewRequest("GET", twitch_API+"channels/"+login+"/follows", nil)
-	//Get list up to 25 chans followed by user
-	req, err := http.NewRequest("GET", twitch_API+"users/"+Id+"/follows/channels", nil)
+	req, err := http.NewRequest("GET", twitch_API+"streams/"+login, nil)
 	req.Header.Set("Client-ID", client_id)
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	contents, err := ioutil.ReadAll(resp.Body)
-	fmt.Println("GetFollows response object:")
-	fmt.Println(string(contents))
+	//fmt.Println("GetStreamStatus response object:")
+	//fmt.Println(string(contents))
+	json.Unmarshal(contents, target)
+	return err
+}
+
+func GetChannel(login string, target interface{}) error {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", twitch_API+"channels/"+login, nil)
+	req.Header.Set("Client-ID", client_id)
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	contents, err := ioutil.ReadAll(resp.Body)
+	//fmt.Println("GetChannel response object:")
+	//fmt.Println(Stream(contents))
 	json.Unmarshal(contents, target)
 	return err
 }
@@ -47,7 +58,8 @@ func GetUserByLogin(Id string, target interface{}) error {
 		fmt.Println("%s", err)
 		return err
 	}
-	fmt.Println(string(contents))
+	//fmt.Println("GetUser response object:")
+	//fmt.Println(string(contents))
 	json.Unmarshal(contents, target)
 	return err
 }

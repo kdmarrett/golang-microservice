@@ -6,21 +6,31 @@ import (
 	"net/http"
 )
 
+type StreamData struct {
+	Stream StreamInfo
+}
+
+type StreamInfo struct {
+	_Id  int
+	Game string
+}
+
 type UserData struct {
 	Data []DataInfo
 }
 
-type FollowData struct {
-	_Total  int
-	Follows []MetaChannelFollow
-}
-
-type MetaChannelFollow struct {
-	Channel ChannelFollow
-}
-
-type ChannelFollow struct {
-	language string
+type ChannelInfo struct {
+	Id           string
+	Created_at   string
+	Login        string
+	Display_name string
+	Type         string
+	Language     string
+	Game         string
+	Bio          string
+	Views        int
+	Followers    int
+	Status       string
 }
 
 type DataInfo struct {
@@ -52,23 +62,28 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	user := DataInfo{}
 	twitch.GetUserByLogin(login, &user)
+	channel := ChannelInfo{}
+	twitch.GetChannel(login, &channel)
+	stream := StreamData{}
+	twitch.GetStreamStatus(login, &stream)
 
 	info := r.URL.Query().Get("info")
 
 	switch info {
 	case "views":
-		fmt.Fprintf(w, "Views: %d\n", user.View_count)
+		fmt.Fprintf(w, "Views: %d\n", channel.Views)
 	case "followers":
-		// requires a secondary query
-		follows := FollowData{}
-		twitch.GetFollows(user.Id, follows)
-		fmt.Fprintf(w, "Followers: %d", follows._Total)
+		fmt.Fprintf(w, "Followers: %d\n", channel.Followers)
 	case "game":
-		fmt.Fprintf(w, "Game:", 0)
+		fmt.Fprintf(w, "Game: %s\n", channel.Game)
 	case "language":
-		fmt.Fprintf(w, "Language:", 0)
+		fmt.Fprintf(w, "Language: %s\n", channel.Language)
 	case "streaming":
-		fmt.Fprintf(w, "Streaming:", 0)
+		status := "Currently streaming"
+		if stream.Stream.Game == "" {
+			status = "Not currently streaming"
+		}
+		fmt.Fprintf(w, "Streaming: %s\n", status)
 	case "display_name":
 		fmt.Fprintf(w, "Display Name: %s\n", user.Display_name)
 	case "bio":
