@@ -3,6 +3,7 @@ package main
 import (
 	"./twitch"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -13,10 +14,6 @@ type StreamData struct {
 type StreamInfo struct {
 	_Id  int
 	Game string
-}
-
-type UserData struct {
-	Data []DataInfo
 }
 
 type ChannelInfo struct {
@@ -45,7 +42,7 @@ type DataInfo struct {
 }
 
 func main() {
-	fmt.Println("Booting the server...")
+	fmt.Println("Server booted successfully, listening...")
 
 	// Configure a sample route
 	http.HandleFunc("/", handler)
@@ -56,18 +53,24 @@ func main() {
 
 // handler function for route of HTTP server
 func handler(w http.ResponseWriter, r *http.Request) {
-	//fmt.Println("Received the following request:", r.URL.Query())
+	// get user inputted query information
 	login := r.URL.Query().Get("login")
-	fmt.Fprintf(w, "Welcome, %s!\n\n", login)
-
-	user := DataInfo{}
-	twitch.GetUserByLogin(login, &user)
-	channel := ChannelInfo{}
-	twitch.GetChannel(login, &channel)
-	stream := StreamData{}
-	twitch.GetStreamStatus(login, &stream)
-
 	info := r.URL.Query().Get("info")
+	fmt.Fprintf(w, "User: %s\n", login)
+
+	//get standard user data json
+	user := DataInfo{}
+	err := twitch.GetUserByLogin(login, &user)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//get standard channel data json
+	channel := ChannelInfo{}
+	err = twitch.GetChannel(login, &channel)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	switch info {
 	case "views":
@@ -79,6 +82,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "language":
 		fmt.Fprintf(w, "Language: %s\n", channel.Language)
 	case "streaming":
+		stream := StreamData{}
+		twitch.GetStreamStatus(login, &stream)
 		status := "Currently streaming"
 		if stream.Stream.Game == "" {
 			status = "Not currently streaming"
